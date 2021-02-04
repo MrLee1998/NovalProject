@@ -25,9 +25,9 @@
     </div>
     <div class="info-last-chapter">
       <p>
-        最后更新:<a @click="quickread()" class="last-update" href="javascript:">
+        最后更新:<span @click="quickread()" class="last-update">
           {{ book.lastChapter }}
-        </a>
+        </span>
       </p>
     </div>
     <div class="info-tags">
@@ -75,13 +75,17 @@ export default {
     this.getbookInfo();
   },
   methods: {
+    quickread() { 
+      console.log(this.book);
+      this.$router.push({ name: "reader", params: { bookid: this.$store.state.SourceId} });
+    },
     followAction() {},
     getbookInfo() {
       getBookInfo(this.$route.params.bookid)
         .then((res) => {
           console.log(res.data);
           this.book = res.data;
-          this.getbookSource()
+          this.getbookSource();
           this.$store.commit("SetBookInfo", res.data);
         })
         .catch((err) => {
@@ -89,15 +93,16 @@ export default {
         });
     },
     getbookSource() {
-      if(this.$route.name === 'bookinfo' ||this.$route.name === 'reader') {
+      if (this.$route.name === "bookinfo" || this.$route.name === "reader") {
         getBookSources({
-          view: 'summary',
-          book: this.$route.params.bookid
-        }).then(res => {
-          this.$store.commit('SetSourceId', res.data[0]._id)
-        }) 
+          view: "summary",
+          book: this.$route.params.bookid,
+        }).then((res) => {
+          console.log(res.data);
+          this.$store.commit("SetSourceId", res.data[0]._id);
+        });
       }
-    }
+    },
   },
   watch: {
     "$route.params": "getbookInfo",

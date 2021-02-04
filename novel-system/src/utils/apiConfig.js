@@ -77,7 +77,7 @@ export function  getChapter(id){
 //获取章节详细内容
 export function getBookChapter(link){
   return service({
-    url:'/content/chapter/'+link,
+    url:'/content/chapter/' + link,
     // url:'http://chapterup.zhuishushenqi.com/chapter/'+link,
   })
 }

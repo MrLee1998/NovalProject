@@ -68,11 +68,13 @@ export default {
       getRank(rankid)
         .then((res) => {
           console.log(res);
+          
           res.data.ranking.books.forEach((list) => {
             list.cover = util.staticPath + list.cover;
           });
           this.rankList = res.data.ranking.books;
           this.title = this.$store.state.RankList.title;
+          
         })
         .catch((err) => {
           console.log(err);
