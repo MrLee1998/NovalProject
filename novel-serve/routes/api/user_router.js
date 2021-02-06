@@ -7,5 +7,5 @@ router.post('/login', user_controller.login)
 
 router.post('/register', user_controller.register)
 
-
+router.post('/category', user_controller.category)
 module.exports = router

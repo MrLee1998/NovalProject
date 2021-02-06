@@ -8,7 +8,7 @@ const collectBookSchema = new Schema({
     unique: true,
     required: true
   },
-  password: {
+  bookname: {
     type: String,
     required: true
   }

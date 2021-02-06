@@ -93,7 +93,16 @@ const register = async (ctx) => {
   }
 
 }
+
+const category = async(ctx) => {
+  ctx.body = {
+    code: 1,
+    msg: 'success',
+    data: require('../public/static/category.json')
+  }
+}
 module.exports = {
   login,
-  register
+  register,
+  category
 }
