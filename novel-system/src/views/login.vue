@@ -44,7 +44,7 @@
 
 <script>
 import { setLocal } from '../common/utils'
-
+// const data = require('../public/static/data.json')
 export default {
   data() {
     return {
@@ -68,7 +68,7 @@ export default {
             this.$toast.success(res.msg)
             setLocal('userId', res.data.userId)
             this.$router.push({
-              path: '/bookStack',
+              path: '/category',
               params: {
                 id: res.data.userId
               }
@@ -100,6 +100,8 @@ export default {
     register() {
       this.isRegister = !this.isRegister
     }
+  },
+  created() {
   },
 };
 </script>

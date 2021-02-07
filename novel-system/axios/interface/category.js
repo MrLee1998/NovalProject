@@ -1,10 +1,11 @@
 import axios from '../api.js' // axios是被封装的
 
 const category = (data) => {
+  // console.log(data);
   return axios({
-    url: '/cats/lv2/statistics',
-    method: 'get',
-    data
+    url: '/category',
+    method: 'post',
+    data: data
   })
 }
 
