@@ -4,6 +4,8 @@ const Password_col = require('../models/password')
 const passport = require('../utils/passport')
 const { v1: uuidv1 } = require('uuid')
 const config = require('../../config')
+const util = require('../public/utils/getCategory')
+const getBookInfo = require('../public/utils/getBookInfo')
 
 // 登录
 const login = async (ctx) => {
@@ -94,15 +96,35 @@ const register = async (ctx) => {
 
 }
 
-const category = async(ctx) => {
-  ctx.body = {
-    code: 1,
-    msg: 'success',
-    data: require('../public/static/category.json')
-  }
+const category = async (ctx) => {
+  // let req = this.$route.query
+  console.log(1);
+  let url = ctx.request.body.url
+  // let data = []
+  await util.getCategoryList(url).then(res => {
+    // console.log(res);
+    ctx.body = {
+      code: 1,
+      msg: 'success',
+      data: res
+    }
+  })
+}
+
+const bookinfo = async (ctx) => {
+  let url = ctx.request.body.url
+  console.log(url);
+  await getBookInfo.getBookInfo(url).then(res => {
+    ctx.body = {
+      code: 1,
+      msg: 'success',
+      data: res
+    }
+  })
 }
 module.exports = {
   login,
   register,
-  category
+  category,
+  bookinfo
 }

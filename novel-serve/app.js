@@ -4,7 +4,7 @@ const bodyParser = require('koa-bodyparser') // 帮助koa解析参数
 const user_router = require('./routes/api/user_router')
 const mongoose = require('mongoose')
 const config = require('./config')
-const getList = require('./app/public/utils/getCategory')
+// const getList = require('./app/public/utils/getCategory')
 
 const app = new Koa()
 
@@ -27,8 +27,9 @@ app.use(cors())
 app.use(bodyParser())
 app.use(user_router.routes())
 
-setTimeout(() => {
-  getList.getList()
-}, 1000)
+// setTimeout(() => {
+//   getList.getCategory()
+//   getList.getCategoryList()
+// }, 1000)
 
 app.listen(3000)
