@@ -1,5 +1,6 @@
 <template>
   <div class="category">
+    <tabbar></tabbar>
     <div class="category-box">
       <div v-for="item in category" :key="item.url">
         <span @click="goTo(item.url)" class="title">{{ item.title }}</span>
@@ -10,8 +11,12 @@
 
 <script>
 import { Toast } from 'vant';
+import tabbar from '../components/tabbar/Tabbar'
 
 export default {
+  components: {
+    tabbar
+  },
   data() {
     return {
       category: [

@@ -1,6 +1,10 @@
 <template>
   <div class="categoryList">
-    <div class="bookinfo" v-for="(book, index) in categoryListData" :key="book.url"
+    <headBack></headBack>
+    <div
+      class="bookinfo"
+      v-for="(book, index) in categoryListData"
+      :key="book.url"
       @click="goBookInfo(index)"
     >
       <div class="img">
@@ -17,9 +21,11 @@
 </template>
 
 <script>
-
-
+import headBack from '../components/head/headBack'
 export default {
+  components: {
+    headBack
+  },
   data() {
     return {
       categoryListData: [],
@@ -28,14 +34,14 @@ export default {
   methods: {
     goBookInfo(index) {
       console.log(index);
-      let url = this.categoryListData[index].url
+      let bookinfo = this.categoryListData[index];
       this.$router.push({
-        name: 'bookinfo',
+        name: "bookinfo",
         params: {
-          url: url
-        }
-      })
-    }
+          bookinfo,
+        },
+      });
+    },
   },
   created() {
     console.log(this.$route.params.categoryListData);
@@ -47,7 +53,7 @@ export default {
 <style lang="less" scoped>
 .categoryList {
   overflow-y: scroll;
-  height: 90vh;
+  height: 99vh;
   .bookinfo {
     display: flex;
     margin: 10px;

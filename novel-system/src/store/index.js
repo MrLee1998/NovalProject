@@ -5,50 +5,16 @@ Vue.use(Vuex)
 
 
 let state ={
-	SourceId: '',
-	isShowCatlog: false,
-	isShowSource: false,
-  isShowList: false,
-  listScroll: 0,
-	BookInfo: {},
-	RankList: {},
-	CategoryList: {},
-	SearchResult: {}
+	pre: '',
+	next: ''
 }
 let mutations ={
-    setShowList(state,list){
-    state.isShowList = list
-    },
-    SetListScroll(state, list){
-      state.listScroll = list;
-    },
-		SetCategoryList(state, list){
-			state.CategoryList = list;
+		setNext(state, next) {
+			state.next = next
 		},
-		SetRankList(state, list){
-			state.RankList = list;
+		setPre(state, pre) {
+			state.pre = pre
 		},
-		ChangeDetail(state,name){
-			if(name == 'catlog'){
-				state.isShowCatlog = true;
-				state.isShowSource = false;
-			}else if(name == 'source'){
-				state.isShowSource = true;
-				state.isShowCatlog =false;
-			}else{
-				state.isShowSource = false;
-				state.isShowCatlog =false;
-			}
-		},
-		SetSourceId(state,index){
-			state.SourceId = index;
-		},
-		SetBookInfo(state, book){
-			state.BookInfo = book;
-		},
-		SetSearchResult(state, books){
-			state.SearchResult = books;
-		}
 	}
 
 export default new Vuex.Store({

@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '../views/login.vue'
 import category from '../views/category.vue'
+import mybook from '../views/mybook.vue'
+import recommend from '../views/recommend.vue'
 
 Vue.use(Router)
 
@@ -10,7 +12,7 @@ export default new Router ({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/recommend'
     },
     {
       path: '/login',
@@ -26,6 +28,16 @@ export default new Router ({
       path: '/category',
       name: 'category',
       component: category
+    },
+    {
+      path: '/recommend',
+      name: 'recommend',
+      component: recommend
+    },
+    {
+      path: '/mybook',
+      name: 'mybook',
+      component: mybook
     },
     {
       path: '/categoryList',
