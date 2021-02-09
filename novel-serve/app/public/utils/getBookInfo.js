@@ -15,6 +15,9 @@ function getBookInfo(url) {
       let data = res.text || ''
       const $ = cheerio.load(data)
       let book = $('.cover')
+      let temp = $(book).find('.block').find('.block_txt2').find('p')
+      let update = $(temp[5]).text()
+      let readBookUrl = $(book).find('.ablum_read').find('.margin_right').find('a').attr('href')
       let newChapterLen = $(book).find('.chapter-list-new').find('.chapter-list').find('li')
       for(let i = 0; i < newChapterLen.length; i++){
         let newChapterData = {}
@@ -45,7 +48,9 @@ function getBookInfo(url) {
         allChapterData: allChapter,
         pre: pre,
         next: next,
-        pageArray: pageArray
+        pageArray: pageArray,
+        update: update,
+        readBookUrl: readBookUrl
       })
     })
   })

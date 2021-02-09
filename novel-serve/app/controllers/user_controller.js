@@ -4,8 +4,9 @@ const Password_col = require('../models/password')
 const passport = require('../utils/passport')
 const { v1: uuidv1 } = require('uuid')
 const config = require('../../config')
-const util = require('../public/utils/getCategory')
+const getCategory = require('../public/utils/getCategory')
 const getBookInfo = require('../public/utils/getBookInfo')
+const getBookContent = require('../public/utils/getBookContent')
 
 // 登录
 const login = async (ctx) => {
@@ -101,7 +102,7 @@ const category = async (ctx) => {
   console.log(1);
   let url = ctx.request.body.url
   // let data = []
-  await util.getCategoryList(url).then(res => {
+  await getCategory.getCategoryList(url).then(res => {
     // console.log(res);
     ctx.body = {
       code: 1,
@@ -122,9 +123,22 @@ const bookinfo = async (ctx) => {
     }
   })
 }
+
+const readbook = async (ctx) => {
+  let url = ctx.request.body.url
+  console.log(url);
+  await getBookContent.getBookContent(url).then(res => {
+    ctx.body = {
+      code: 1,
+      msg: 'success',
+      data: res
+    }
+  })
+}
 module.exports = {
   login,
   register,
   category,
-  bookinfo
+  bookinfo,
+  readbook
 }

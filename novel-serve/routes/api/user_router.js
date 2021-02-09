@@ -11,4 +11,6 @@ router.post('/category', user_controller.category)
 
 router.post('/bookinfo', user_controller.bookinfo)
 
+router.post('/readbook', user_controller.readbook)
+
 module.exports = router
