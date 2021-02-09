@@ -45,7 +45,8 @@ export default {
   },
   created() {
     console.log(this.$route.params.categoryListData);
-    this.categoryListData = this.$route.params.categoryListData;
+    console.log(this.$store.state.categoryList);
+    this.categoryListData = this.$route.params.categoryListData || this.$store.state.categoryList;
   },
 };
 </script>

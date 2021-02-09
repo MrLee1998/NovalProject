@@ -50,6 +50,12 @@ export default new Router ({
       name: 'bookinfo',
       component: () => import('../components/bookinfo.vue'),
       // component: Login,
+    },
+    {
+      path: '/readbook',
+      name: 'readbook',
+      component: () => import('../components/readBook.vue'),
+      // component: Login,
     }
   ]
 })

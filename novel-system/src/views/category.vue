@@ -3,7 +3,7 @@
     <tabbar></tabbar>
     <div class="category-box">
       <div v-for="item in category" :key="item.url">
-        <span @click="goTo(item.url)" class="title">{{ item.title }}</span>
+        <span @click="goTo(item.url, item.title)" class="title">{{ item.title }}</span>
       </div>
     </div>
   </div>
@@ -62,8 +62,9 @@ export default {
     };
   },
   methods: {
-    goTo(url) {
-      console.log(url);
+    goTo(url, title) {
+      console.log(url, title);
+      this.$store.commit('setBookType', title)
       Toast.loading({
             message: "加载中...",
             forbidClick: true,
@@ -74,7 +75,7 @@ export default {
         })
         .then((res) => {
           console.log(res);
-          
+          this.$store.commit("setCategoryList", res.data);
           this.$router.push({
             // path: `/categoryList${url}`,
             name: "categoryList",

@@ -6,7 +6,12 @@ Vue.use(Vuex)
 
 let state ={
 	pre: '',
-	next: ''
+	next: '',
+	categoryList: [],
+	footprint: [],  //足迹
+	bookType: '',
+	readBookUrl: '',
+	bookContent: {}
 }
 let mutations ={
 		setNext(state, next) {
@@ -15,6 +20,18 @@ let mutations ={
 		setPre(state, pre) {
 			state.pre = pre
 		},
+		setCategoryList(state, categoryList) {
+			state.categoryList = categoryList
+		},
+		setBookType(state, bookType) {
+			state.bookType = bookType
+		},
+		setReadBookUrl(state, readBookUrl) {
+			state.readBookUrl = readBookUrl
+		},
+		setBookContent(state, bookContent) {
+			state.bookContent = bookContent
+		}
 	}
 
 export default new Vuex.Store({

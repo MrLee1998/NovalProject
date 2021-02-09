@@ -7,13 +7,18 @@
       </div>
       <div class="right">
         <div class="title">{{ bookInfo.title }}</div>
+        <div class="bookType">类型: {{ this.$store.state.bookType}}</div>
         <div class="author">{{ bookInfo.author }}</div>
-        <div class="update">{{ bookInfo.update }}</div>
+        <div class="update">{{ update }}</div>
         <div class="lastChapter">最新：{{ bookInfo.lastChapterTitle }}</div>
       </div>
     </div>
     <div class="introduce">
       <span>{{ bookInfo.introduce }}</span>
+    </div>
+    <div>
+      <button @click="goToRead">开始阅读</button>
+      <button>加入书架</button>
     </div>
     <div class="newChapter">
       <div class="title">最新章节预览</div>
@@ -72,7 +77,8 @@ export default {
       pageArray: [],
       title: '',
       chapterUrl: '',
-      chapterNumData: []
+      chapterNumData: [],
+      update: ''
     };
   },
   methods: {
@@ -88,6 +94,21 @@ export default {
     choosePageNum() {
       console.log('url');
     },
+    goToRead() {
+      this.$http.readbook({
+        url: this.$store.state.readBookUrl || ''
+      }).then(res => {
+        console.log(res);
+        if(res) {
+          this.$store.commit('setBookContent', res.data)
+          this.$router.push({
+            path: '/readbook'
+          })
+          console.log(this.$store.state.bookContent);
+        }
+      })
+     
+    },
     getBookInfo(url) {
       this.$http
         .bookinfo({
@@ -98,6 +119,7 @@ export default {
           this.newChapterData = res.data.newChapterData;
           this.allChapterData = res.data.allChapterData;
           this.pageArray = res.data.pageArray
+          this.update = res.data.update
           res.data.pageArray.forEach((item) => {
             if(item) {
               this.chapterNumData.push(item)
@@ -105,6 +127,7 @@ export default {
           })
           this.$store.commit("setNext", res.data.next);
           this.$store.commit("setPre", res.data.pre || '');
+          this.$store.commit("setReadBookUrl", res.data.readBookUrl)
           res.data.pageArray.forEach((item) => {
             if(item.chapterUrl == url) {
               this.title = item.chapterNum
@@ -148,13 +171,21 @@ export default {
         font-size: 17px;
         font-weight: bold;
       }
+      .bookType {
+        font-size: 12px;
+        line-height: 20px;
+      }
       .author {
         font-size: 12px;
-        line-height: 25px;
+        line-height: 20px;
       }
       .lastChapter {
         font-size: 12px;
-        line-height: 25px;
+        line-height: 20px;
+      }
+      .update {
+        font-size: 12px;
+        line-height: 20px;
       }
     }
   }
