@@ -35,10 +35,11 @@ export default {
     goBookInfo(index) {
       console.log(index);
       let bookinfo = this.categoryListData[index];
+      this.$store.commit('setBookInfo', bookinfo)
       this.$router.push({
-        name: "bookinfo",
-        params: {
-          bookinfo,
+        path: "/bookinfo",
+        query: {
+          bookinfo
         },
       });
     },

@@ -11,7 +11,9 @@ let state ={
 	footprint: [],  //足迹
 	bookType: '',
 	readBookUrl: '',
-	bookContent: {}
+	bookContent: {},
+	bookInfo: {},
+	currentUrl: ''
 }
 let mutations ={
 		setNext(state, next) {
@@ -31,6 +33,15 @@ let mutations ={
 		},
 		setBookContent(state, bookContent) {
 			state.bookContent = bookContent
+		},
+		setFootprint(state, footprint) {
+			state.footprint.push(footprint)
+		},
+		setBookInfo(state, bookInfo) {
+			state.bookInfo = bookInfo
+		},
+		setCurrentUrl(state, currentUrl) {
+			state.currentUrl = currentUrl
 		}
 	}
 

@@ -101,10 +101,13 @@ export default {
         console.log(res);
         if(res) {
           this.$store.commit('setBookContent', res.data)
+          this.$store.commit('setFootprint', this.$store.state.bookInfo)
           this.$router.push({
-            path: '/readbook'
+            path: '/readbook',
+            query: {
+              url: this.currentUrl
+            }
           })
-          console.log(this.$store.state.bookContent);
         }
       })
      
@@ -138,7 +141,9 @@ export default {
     },
   },
   created() {
-    this.bookInfo = this.$route.params.bookinfo;
+    this.bookInfo = this.$store.state.bookInfo;
+    // console.log(this.bookInfo);
+    // console.log(this.$store.state.bookInfo);
     this.currentUrl = this.bookInfo.url;
     this.getBookInfo(this.currentUrl);
   },
