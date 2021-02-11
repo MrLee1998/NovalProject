@@ -4,6 +4,7 @@ import Login from '../views/login.vue'
 import category from '../views/category.vue'
 import mybook from '../views/mybook.vue'
 import recommend from '../views/recommend.vue'
+import foot from '../views/foot.vue'
 
 Vue.use(Router)
 
@@ -38,6 +39,11 @@ export default new Router ({
       path: '/mybook',
       name: 'mybook',
       component: mybook
+    },
+    {
+      path: '/foot',
+      name: 'foot',
+      component: foot
     },
     {
       path: '/categoryList',

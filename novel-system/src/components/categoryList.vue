@@ -1,6 +1,7 @@
 <template>
   <div class="categoryList">
-    <headBack></headBack>
+    <headBack :routerUrl="'/category'"></headBack>
+    <div>{{this.$store.state.bookType}}</div>
     <div
       class="bookinfo"
       v-for="(book, index) in categoryListData"

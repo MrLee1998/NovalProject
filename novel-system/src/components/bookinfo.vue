@@ -1,6 +1,6 @@
 <template>
   <div class="bookInfo">
-    <headBack></headBack>
+    <headBack :routerUrl="'/categoryList'"></headBack>
     <div class="bookinfo-header">
       <div class="left">
         <img :src="bookInfo.img" alt="" />

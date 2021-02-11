@@ -16,6 +16,12 @@
 
 <script>
 export default {
+  props: {
+    routerUrl: {
+      type: String,
+      require: true
+    }
+  },
   data() {
     return {
       
@@ -24,7 +30,7 @@ export default {
   methods: {
      onClickLeft() {
       console.log("1");
-      this.$router.back(-1);
+      this.$router.push(this.routerUrl);
     },
     onClickRight() {
       console.log("2");
