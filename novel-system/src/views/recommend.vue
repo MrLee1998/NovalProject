@@ -3,21 +3,19 @@
     <tabbar></tabbar>
     <div class="recommend-box">
       <ul class="recommend-list">
-        <li class="fix" v-for="(book, index) in categoryList" :key="book.url">
-          <router-link :to="'/bookinfo/'">
-            <div class="book-img-box">
-              <img class="book-img" :src="book.img" alt="" />
-              <div class="book-number">{{ index + 1 }}</div>
-            </div>
-            <div class="book-info">
-              <p class="book-title">{{ book.title }}</p>
-              <p class="book-content">{{ book.introduce }}</p>
-              <ul class="book-tags fix">
-                <li>{{ book.author }}</li>
-                <!-- <li style="float: right"></li> -->
-              </ul>
-            </div>
-          </router-link>
+        <li class="fix" @click="goToBookInfo(index)" v-for="(book, index) in categoryList" :key="book.url">
+          <div class="book-img-box">
+            <img class="book-img" :src="book.img" alt="" />
+            <div class="book-number">{{ index + 1 }}</div>
+          </div>
+          <div class="book-info">
+            <p class="book-title">{{ book.title }}</p>
+            <p class="book-content">{{ book.introduce }}</p>
+            <ul class="book-tags fix">
+              <li>{{ book.author }}</li>
+              <!-- <li style="float: right"></li> -->
+            </ul>
+          </div>
         </li>
       </ul>
     </div>
@@ -45,7 +43,7 @@ export default {
       });
       this.$http
         .category({
-          url: `/quanben/${Math.floor(Math.random()*30 + 1)}.html`,
+          url: `/quanben/${Math.floor(Math.random() * 30 + 1)}.html`,
         })
         .then((res) => {
           console.log(res);
@@ -53,6 +51,17 @@ export default {
           this.$store.commit("setCategoryList", res.data);
         });
     },
+    goToBookInfo(index) {
+      console.log(index);
+      let bookinfo = this.categoryList[index];
+      this.$store.commit('setBookInfo', bookinfo)
+      this.$router.push({
+        path: "/bookinfo",
+        query: {
+          bookinfo
+        },
+      });
+    }
   },
   created() {
     this.getRecommned();
