@@ -13,4 +13,8 @@ router.post('/bookinfo', user_controller.bookinfo)
 
 router.post('/readbook', user_controller.readbook)
 
+router.post('/mybook', user_controller.mybook)
+
+router.post('/getmybook', user_controller.getmybook)
+
 module.exports = router

@@ -47,7 +47,7 @@ function getCategoryList(url) {
       for(let i = 0; i < categoryList.length; i++) {
         let obj = {}
         obj['img'] = $(categoryList[i]).find('.bookimg').find('a').find('img').attr('src')
-        obj['url'] = $(categoryList[i]).find('.bookimg').find('a').attr('href')
+        obj['url'] = $(categoryList[i]).find('.bookimg').find('a').attr('href') || 'https://m.zwdu.com/images/nocover.jpg'
         obj['author'] = $(categoryList[i]).find('.bookinfo').find('.author').text()
         obj['title'] = $(categoryList[i]).find('.bookinfo').find('.bookname').find('.iTit').find('a').text()
         obj['lastChapter'] = $(categoryList[i]).find('.bookinfo').find('.update').find('a').attr('href')
