@@ -3,6 +3,8 @@ import apiRegister from './interface/register'
 import apiCategory from './interface/category'
 import apiBookinfo from './interface/bookinfo'
 import apiReadbook from './interface/readbook'
+import apiMybook from './interface/mybook'
+import apiGetbookinfo from './interface/getmybook'
 
 const install = Vue => {   // vue 中 use 方法 只能识别installl 
   Object.defineProperties(Vue.prototype, {
@@ -14,7 +16,9 @@ const install = Vue => {   // vue 中 use 方法 只能识别installl
           apiRegister,
           apiCategory,
           apiBookinfo,
-          apiReadbook
+          apiReadbook,
+          apiMybook,
+          apiGetbookinfo
           // ...
         )
       }

@@ -7,7 +7,7 @@
       </div>
       <div class="right">
         <div class="title">{{ bookInfo.title }}</div>
-        <div class="bookType">类型: {{ this.$store.state.bookType}}</div>
+        <div class="bookType">类型: {{ this.$store.state.bookType }}</div>
         <div class="author">{{ bookInfo.author }}</div>
         <div class="update">{{ update }}</div>
         <div class="lastChapter">最新：{{ bookInfo.lastChapterTitle }}</div>
@@ -16,9 +16,9 @@
     <div class="introduce">
       <span>{{ bookInfo.introduce }}</span>
     </div>
-    <div>
+    <div class="btn-item">
       <button @click="goToRead">开始阅读</button>
-      <button>加入书架</button>
+      <button @click="addBook">加入书架</button>
     </div>
     <div class="newChapter">
       <div class="title">最新章节预览</div>
@@ -26,6 +26,7 @@
         class="newChapter-content"
         v-for="chapter1 in newChapterData"
         :key="chapter1.url"
+        @click="chapterRead(chapter1.chapterUrl)"
       >
         <div class="newChapter-content__title">{{ chapter1.title }}</div>
       </div>
@@ -34,8 +35,9 @@
       <div class="title">目录</div>
       <div
         class="allChapter-content"
-        v-for="(chapter2) in allChapterData"
+        v-for="chapter2 in allChapterData"
         :key="chapter2.url"
+        @click="chapterRead(chapter2.chapterUrl)"
       >
         <div class="allChapter-content__title">{{ chapter2.title }}</div>
       </div>
@@ -51,9 +53,11 @@
         </select>
       </div> -->
       <van-dropdown-menu direction="up" active-color="#1989fa">
-        <van-dropdown-item 
-        v-model="chapterUrl" :options="chapterNumData" :title="title" 
-        @change="choosePageNum(pageArray.chapterUrl)"
+        <van-dropdown-item
+          v-model="chapterUrl"
+          :options="chapterNumData"
+          :title="title"
+          @change="choosePageNum(pageArray.chapterUrl)"
         >
         </van-dropdown-item>
       </van-dropdown-menu>
@@ -64,6 +68,9 @@
 
 <script>
 import headBack from "../components/head/headBack";
+import { getLocal } from "../common/utils";
+import { Toast } from "vant";
+
 export default {
   components: {
     headBack,
@@ -75,10 +82,10 @@ export default {
       allChapterData: [],
       currentUrl: "",
       pageArray: [],
-      title: '',
-      chapterUrl: '',
+      title: "",
+      chapterUrl: "",
       chapterNumData: [],
-      update: ''
+      update: "",
     };
   },
   methods: {
@@ -92,25 +99,75 @@ export default {
       this.getBookInfo(this.$store.state.pre);
     },
     choosePageNum() {
-      console.log('url');
+      console.log("url");
     },
     goToRead() {
-      this.$http.readbook({
-        url: this.$store.state.readBookUrl || ''
-      }).then(res => {
-        console.log(res);
-        if(res) {
-          this.$store.commit('setBookContent', res.data)
-          this.$store.commit('setFootprint', this.$store.state.bookInfo)
-          this.$router.push({
-            path: '/readbook',
-            query: {
-              url: this.currentUrl
-            }
-          })
-        }
-      })
-     
+      this.$http
+        .readbook({
+          url: this.$store.state.readBookUrl || "",
+        })
+        .then((res) => {
+          console.log(res);
+          if (res) {
+            this.$store.commit("setBookContent", res.data);
+            this.$store.commit("setFootprint", this.$store.state.bookInfo);
+            this.$router.push({
+              path: "/readbook",
+              query: {
+                url: this.currentUrl,
+              },
+            });
+          }
+        });
+    },
+    addBook() {
+      let userId = getLocal("userId");
+      // console.log(userId);
+      // this.$http
+      //   .getmybook({
+      //     userId: userId,
+      //   })
+      //   .then((res) => {
+      //     console.log(res);
+      //   });
+      if (!userId) {
+        Toast({
+          message: "请先登录哦!",
+          icon: "like-o",
+        });
+        this.$router.push("/login");
+      }
+      this.$http
+        .mybook({
+           userId: userId,
+          bookInfo: this.$store.state.bookInfo,
+        })
+        .then((res) => {
+          console.log(res);
+          if(res.data.code == 1) {
+            Toast.success('加入成功')
+          }
+        });
+    },
+    chapterRead(url) {
+      console.log(url);
+      this.$http
+        .readbook({
+          url: url,
+        })
+        .then((res) => {
+          console.log(res);
+          if (res) {
+            this.$store.commit("setBookContent", res.data);
+            this.$store.commit("setFootprint", this.$store.state.bookInfo);
+            this.$router.push({
+              path: "/readbook",
+              query: {
+                url: this.currentUrl,
+              },
+            });
+          }
+        });
     },
     getBookInfo(url) {
       this.$http
@@ -121,29 +178,27 @@ export default {
           console.log(res);
           this.newChapterData = res.data.newChapterData;
           this.allChapterData = res.data.allChapterData;
-          this.pageArray = res.data.pageArray
-          this.update = res.data.update
+          this.pageArray = res.data.pageArray;
+          this.update = res.data.update;
           res.data.pageArray.forEach((item) => {
-            if(item) {
-              this.chapterNumData.push(item)
+            if (item) {
+              this.chapterNumData.push(item);
             }
-          })
+          });
           this.$store.commit("setNext", res.data.next);
-          this.$store.commit("setPre", res.data.pre || '');
-          this.$store.commit("setReadBookUrl", res.data.readBookUrl)
+          this.$store.commit("setPre", res.data.pre || "");
+          this.$store.commit("setReadBookUrl", res.data.readBookUrl);
           res.data.pageArray.forEach((item) => {
-            if(item.chapterUrl == url) {
-              this.title = item.chapterNum
-              this.chapterUrl = item.chapterUrl
+            if (item.chapterUrl == url) {
+              this.title = item.chapterNum;
+              this.chapterUrl = item.chapterUrl;
             }
-          })
+          });
         });
     },
   },
   created() {
     this.bookInfo = this.$store.state.bookInfo;
-    // console.log(this.bookInfo);
-    // console.log(this.$store.state.bookInfo);
     this.currentUrl = this.bookInfo.url;
     this.getBookInfo(this.currentUrl);
   },
@@ -155,6 +210,13 @@ export default {
   overflow-y: scroll;
   height: 92vh;
   margin: 10px;
+  .btn-item {
+    button {
+      width: 100px;
+      margin: 10px 0 0 50px;
+      border-radius: 5px;
+    }
+  }
   .bookinfo-header {
     display: flex;
     // margin: 10px;
@@ -218,11 +280,10 @@ export default {
         background-color: rgb(158, 158, 150);
         box-shadow: 10px 10px 5px #888888;
         border-radius: 5px;
-
       }
     }
   }
-   .allChapter {
+  .allChapter {
     border: 1px solid #dedede;
     border-radius: 5px;
     margin-top: 10px;

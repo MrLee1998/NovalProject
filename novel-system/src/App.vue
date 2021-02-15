@@ -9,6 +9,8 @@
 
 <script>
 // import tabbar from "./components/tabbar/Tabbar";
+// import { getLocal } from "./common/utils";
+
 export default {
   name: "App",
   components: {
@@ -16,6 +18,17 @@ export default {
   },
   data() {
     return {};
+  },
+  created() {
+    // let userId = getLocal("userId");
+    // this.$http
+    //   .getmybook({
+    //     userId: userId,
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //     this.$store.commit('setMybooks', res.data.bookInfo);
+    //   });
   },
 };
 </script>

@@ -102,6 +102,11 @@ export default {
     },
   },
   created() {
+    this.$http.category({
+      url: this.category[0].url
+    }).then(res => {
+      console.log(res);
+    })
   },
 };
 </script>

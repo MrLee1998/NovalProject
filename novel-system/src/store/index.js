@@ -13,7 +13,8 @@ let state ={
 	readBookUrl: '',
 	bookContent: {},
 	bookInfo: {},
-	currentUrl: ''
+	currentUrl: '',
+	mybooks: []
 }
 let mutations ={
 		setNext(state, next) {
@@ -35,13 +36,25 @@ let mutations ={
 			state.bookContent = bookContent
 		},
 		setFootprint(state, footprint) {
-			state.footprint.push(footprint)
+			if(state.footprint.length > 1) {
+				for(let i = 0; i < state.footprint.length; i++) {
+					if(state.footprint[i].url == footprint.url) {
+						return
+					}
+				}
+				state.footprint.push(footprint)
+			} else {
+				state.footprint.push(footprint)
+			}
 		},
 		setBookInfo(state, bookInfo) {
 			state.bookInfo = bookInfo
 		},
 		setCurrentUrl(state, currentUrl) {
 			state.currentUrl = currentUrl
+		},
+		setMybooks(state, mybooks) {
+			state.mybooks = mybooks
 		}
 	}
 

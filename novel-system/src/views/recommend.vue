@@ -25,6 +25,7 @@
 <script>
 import { Toast } from "vant";
 import tabbar from "../components/tabbar/Tabbar";
+// import { getLocal } from '../common/utils'
 
 export default {
   components: {
