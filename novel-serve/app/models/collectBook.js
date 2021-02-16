@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 const collectBookSchema = new Schema({
-  url: {
+  userId: {
     type: String,
     required: true
   },
-  userId: {
-    type: String,
+  bookInfo: {
+    type: Array,
     required: true
   },
 }, { collection: 'collectBook', versionKey: false});

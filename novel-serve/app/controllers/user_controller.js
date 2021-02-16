@@ -1,6 +1,7 @@
 const User_col = require('../models/user')
 const Password_col = require('../models/password')
 const CollectBook_col = require('../models/collectBook')
+const ReadBookUrl_col = require('../models/readBookUrl')
 const passport = require('../utils/passport')
 const { v1: uuidv1 } = require('uuid')
 const config = require('../../config')
@@ -18,7 +19,7 @@ const login = async (ctx) => {
   const user = await User_col.findOne({
     account: req.username
   })
-  if(!user) {
+  if (!user) {
     ctx.status = 200
     ctx.body = {
       code: 0,
@@ -50,7 +51,7 @@ const login = async (ctx) => {
     return;
   }
   ctx.body = {
-    code: 0, 
+    code: 0,
     msg: '密码错误!'
   }
 }
@@ -98,30 +99,51 @@ const register = async (ctx) => {
 }
 
 const mybook = async (ctx) => {
-  console.log(ctx.request.body);
-  let url = ctx.request.body.url
+  // let url = ctx.request.body.bookInfo.url
+  // console.log(url);
   let userId = ctx.request.body.userId
-  // let _id = ctx.request.body._id
-  const newUrl = await CollectBook_col.findOne({
-    url: url
+  let bookInfo = ctx.request.body.bookInfo
+  const newBook = await CollectBook_col.findOne({
+    bookInfo: bookInfo
   })
-  if(newUrl) {
+  // console.log(newBook);
+  if (newBook) {
     ctx.body = {
       code: 1,
       msg: '已经在书架了',
-      data: newUrl
+      data: newBook
     }
     return
   }
-  const addUrl = await CollectBook_col.create({
-    userId,
-    url
+  const mybook = await CollectBook_col.find({
+    userId
   })
-  if(addUrl) {
+  console.log(mybook[0].bookInfo);
+  if (!mybook) {
+    const addBook = await CollectBook_col.create({
+      userId,
+      bookInfo
+    })
+    if (addBook) {
+      ctx.body = {
+        code: 1,
+        msg: '加入成功',
+        data: addBook
+      }
+    }
+  } else {
+    let data = await CollectBook_col.update({
+      userId: userId
+    }, {
+      $push: {
+        bookInfo
+      }
+    }
+    )
     ctx.body = {
       code: 1,
       msg: '加入成功',
-      data: addUrl
+      data: data
     }
   }
 }
@@ -131,14 +153,15 @@ const getmybook = async (ctx) => {
   const mybook = await CollectBook_col.find({
     userId
   })
-  if(!mybook) {
+  // console.log(mybook);
+  if (!mybook) {
     ctx.body = {
       code: 1,
       msg: '书架为空',
       data: mybook
     }
   }
-  if(mybook) {
+  if (mybook) {
     ctx.body = {
       code: 1,
       msg: 'success',
@@ -185,6 +208,55 @@ const readbook = async (ctx) => {
     }
   })
 }
+
+const keepBookUrl = async (ctx) => {
+  let userId = ctx.request.body.userId
+  let bookUrl = ctx.request.body.bookUrl
+  if (!userId) {
+    const addBookUrl = await ReadBookUrl_col.create({
+      userId,
+      bookUrl
+    })
+    ctx.body = {
+      code: 1,
+      msg: '添加成功',
+      data: addBookUrl
+    }
+  } else {
+    const temp = await ReadBookUrl_col.find({
+      userId: userId
+    })
+    if (temp.bookUrl[0].readBookUrl == bookUrl.readBookUrl) {
+      let data = await ReadBookUrl_col.update({
+        userId: userId
+      }, {
+        $set: {
+          bookUrl
+        }
+      })
+      ctx.body = {
+        code: 1,
+        msg: '修改成功',
+        data: data
+      }
+    } else {
+      let data = await ReadBookUrl_col.update({
+        userId: userId
+      }, {
+        $push: {
+          bookUrl
+        }
+      }
+      )
+      ctx.body = {
+        code: 1,
+        msg: '加入成功',
+        data: data
+      }
+    }
+
+  }
+}
 module.exports = {
   login,
   register,
@@ -192,5 +264,6 @@ module.exports = {
   bookinfo,
   readbook,
   mybook,
-  getmybook
+  getmybook,
+  keepBookUrl
 }
