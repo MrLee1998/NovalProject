@@ -17,4 +17,6 @@ router.post('/mybook', user_controller.mybook)
 
 router.post('/getmybook', user_controller.getmybook)
 
+router.post('/keepBookUrl', user_controller.keepBookUrl)
+
 module.exports = router

@@ -100,26 +100,15 @@ const register = async (ctx) => {
 
 const mybook = async (ctx) => {
   // let url = ctx.request.body.bookInfo.url
-  // console.log(url);
+  // console.log(ctx.request.body);
   let userId = ctx.request.body.userId
   let bookInfo = ctx.request.body.bookInfo
-  const newBook = await CollectBook_col.findOne({
-    bookInfo: bookInfo
-  })
-  // console.log(newBook);
-  if (newBook) {
-    ctx.body = {
-      code: 1,
-      msg: '已经在书架了',
-      data: newBook
-    }
-    return
-  }
-  const mybook = await CollectBook_col.find({
+  const findUserId = await CollectBook_col.find({
     userId
   })
-  console.log(mybook[0].bookInfo);
-  if (!mybook) {
+  // console.log(findUserId.length);
+  let len = findUserId.length
+  if (len == 0) {
     const addBook = await CollectBook_col.create({
       userId,
       bookInfo
@@ -132,18 +121,30 @@ const mybook = async (ctx) => {
       }
     }
   } else {
-    let data = await CollectBook_col.update({
-      userId: userId
-    }, {
-      $push: {
-        bookInfo
+    const findBookInfo = await CollectBook_col.findOne({
+      bookInfo: bookInfo
+    })
+    // console.log(newBook);
+    if (findBookInfo) {
+      return ctx.body = {
+        code: 1,
+        msg: '已经在书架了',
+        data: findBookInfo
       }
-    }
-    )
-    ctx.body = {
-      code: 1,
-      msg: '加入成功',
-      data: data
+    } else {
+      let data = await CollectBook_col.update({
+        userId: userId
+      }, {
+        $push: {
+          bookInfo
+        }
+      }
+      )
+      return ctx.body = {
+        code: 1,
+        msg: '加入成功',
+        data: data
+      }
     }
   }
 }
@@ -209,52 +210,56 @@ const readbook = async (ctx) => {
   })
 }
 
+//  保存小说章节记录
 const keepBookUrl = async (ctx) => {
   let userId = ctx.request.body.userId
+  // let readChapterUrl = ctx.request.body.bookUrl.readChapterUrl
   let bookUrl = ctx.request.body.bookUrl
-  if (!userId) {
-    const addBookUrl = await ReadBookUrl_col.create({
-      userId,
-      bookUrl
+  // console.log(bookUrl);
+  const findUserId = await ReadBookUrl_col.find({
+    userId: userId
+  })
+  // console.log(findUserId);
+  let len1 = findUserId.length
+  if (len1 != 0) {
+    const findBookUrl = await ReadBookUrl_col.find({
+      bookUrl: bookUrl
     })
-    ctx.body = {
-      code: 1,
-      msg: '添加成功',
-      data: addBookUrl
-    }
-  } else {
-    const temp = await ReadBookUrl_col.find({
-      userId: userId
-    })
-    if (temp.bookUrl[0].readBookUrl == bookUrl.readBookUrl) {
-      let data = await ReadBookUrl_col.update({
-        userId: userId
-      }, {
-        $set: {
-          bookUrl
-        }
-      })
-      ctx.body = {
+    // console.log(findUserId);
+    let len2 = findBookUrl.length
+    if (len2 != 0) {
+      return ctx.body = {
         code: 1,
-        msg: '修改成功',
-        data: data
+        msg: '书本url已经存在了',
+        data: findBookUrl
       }
     } else {
-      let data = await ReadBookUrl_col.update({
+      const addBookUrl = await ReadBookUrl_col.update({
         userId: userId
       }, {
         $push: {
           bookUrl
         }
-      }
-      )
-      ctx.body = {
+      })
+      console.log(addBookUrl);
+      return ctx.body = {
         code: 1,
-        msg: '加入成功',
-        data: data
+        msg: '书本url添加成功了',
+        data: addBookUrl
       }
     }
-
+  } else {
+    const addNewBookUrl = await ReadBookUrl_col.create({
+      userId,
+      bookUrl
+    })
+    if (addNewBookUrl) {
+      return ctx.body = {
+        code: 1,
+        msg: '添加成功',
+        data: addNewBookUrl
+      }
+    }
   }
 }
 module.exports = {
