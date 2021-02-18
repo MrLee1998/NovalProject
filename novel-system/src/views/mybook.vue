@@ -1,19 +1,21 @@
 <template>
-  <div class="mybook">
+  <div>
     <tabbar></tabbar>
-    <div
-      @click="goToRead(index)"
-      class="mybook-box"
-      v-for="(book, index) in mybooks"
-      :key="book.url"
-    >
-      <div class="img-box">
-        <img class="img" :src="book.img" alt="" />
-      </div>
-      <div class="content-box">
-        <div class="title">{{ book.title }}</div>
-        <div class="lastChapter">
-          {{ book.lastChapterTitle }}
+    <div class="mybook">
+      <div
+        @click="goToRead(index)"
+        class="mybook-box"
+        v-for="(book, index) in mybooks"
+        :key="book.url"
+      >
+        <div class="img-box">
+          <img class="img" :src="book.img" alt="" />
+        </div>
+        <div class="content-box">
+          <div class="title">{{ book.title }}</div>
+          <div class="lastChapter">
+            {{ book.lastChapterTitle }}
+          </div>
         </div>
       </div>
     </div>
@@ -48,21 +50,25 @@ export default {
         })
         .then((res) => {
           console.log(res);
-          this.mybooks = res.data[0].bookInfo;
-          console.log(this.mybooks);
+          if(res.data.length > 0) {
+             this.mybooks = res.data[0].bookInfo;
+            console.log(this.mybooks);
+          }   
           // this.$store.commit('setMybooks', res.data.bookInfo);
         });
     },
     goToRead(index) {
-      console.log(index);
-      let url = this.mybooks[index].url
+      // console.log(index);
+      console.log(this.mybooks[index]);
+      let url = this.mybooks[index].url;
+      this.$store.commit("setMyBookRouter", "/mybook");
       this.$http
         .bookinfo({
           url: url,
         })
         .then((res) => {
-          console.log(res);
-          this.$store.commit('setBookInfo', this.mybooks[index])
+          // console.log(res);
+          this.$store.commit("setBookInfo", this.mybooks[index]);
           this.$store.commit("setReadBookUrl", res.data.readBookUrl);
           this.$http
             .readbook({
@@ -86,6 +92,7 @@ export default {
   },
   created() {
     this.getMybooks();
+    this.$store.commit("setMyBookRouter", "");
   },
 };
 </script>
@@ -94,10 +101,12 @@ export default {
 .mybook {
   overflow-y: scroll;
   height: 90vh;
+  margin-top: 35px;
 }
 .mybook-box {
   display: flex;
   margin: 10px;
+  width: 100%;
   .content-box {
     margin: 10px;
     .title {

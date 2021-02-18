@@ -5,6 +5,7 @@ import apiBookinfo from './interface/bookinfo'
 import apiReadbook from './interface/readbook'
 import apiMybook from './interface/mybook'
 import apiGetbookinfo from './interface/getmybook'
+import apiKeepBookUrl from './interface/bookChapterUrl'
 
 const install = Vue => {   // vue 中 use 方法 只能识别installl 
   Object.defineProperties(Vue.prototype, {
@@ -18,7 +19,8 @@ const install = Vue => {   // vue 中 use 方法 只能识别installl
           apiBookinfo,
           apiReadbook,
           apiMybook,
-          apiGetbookinfo
+          apiGetbookinfo,
+          apiKeepBookUrl
           // ...
         )
       }

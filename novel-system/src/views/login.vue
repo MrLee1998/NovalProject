@@ -68,7 +68,7 @@ export default {
             this.$toast.success(res.msg)
             setLocal('userId', res.data.userId)
             this.$router.push({
-              path: '/category',
+              path: '/mybook',
               params: {
                 id: res.data.userId
               }

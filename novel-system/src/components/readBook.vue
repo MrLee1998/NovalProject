@@ -1,9 +1,14 @@
 <template>
   <div class="bookContent">
     <div class="btn-box-top">
-      <button @click="preChapter()">上一章</button>
-      <button @click="goToChapter()">目录</button>
-      <button @click="nextChapter()">下一张</button>
+      <van-nav-bar
+        :title="this.$store.state.bookInfo.title"
+        left-text="返回"
+        right-text="首页"
+        left-arrow
+        @click-left="onClickLeft"
+        @click-right="onClickRight"
+      />
     </div>
     <div class="book-box">
       <div class="book-title">{{ this.$store.state.bookContent.title }}</div>
@@ -31,13 +36,17 @@ export default {
       this.$store.commit("setCurrentUrl", this.$route.query.url);
     },
     nextChapter() {
-      if (this.$store.state.bookContent.preChapter == this.$store.state.bookInfo.lastChapter) {
+      if (
+        this.$store.state.bookContent.preChapter ==
+        this.$store.state.bookInfo.lastChapter
+      ) {
         Toast({
           message: "已经是最后一章了!",
           icon: "like-o",
         });
         return;
       }
+      console.log(this.$store.state.bookInfo);
       this.$store.commit(
         "setCurrentUrl",
         this.$store.state.bookContent.nextChapter
@@ -47,12 +56,15 @@ export default {
           url: this.$store.state.bookContent.nextChapter,
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           this.$store.commit("setBookContent", res.data);
         });
     },
     preChapter() {
-      if (this.$store.state.bookContent.preChapter == this.$store.state.bookInfo.url) {
+      if (
+        this.$store.state.bookContent.preChapter ==
+        this.$store.state.bookInfo.url
+      ) {
         Toast({
           message: "已经是第一章了!",
           icon: "like-o",
@@ -73,11 +85,27 @@ export default {
           // document.getElementsByClassName('.bookContent').scrollTop = 0
         });
     },
+    onClickLeft() {
+      if (this.$store.state.myBookRouter == '/mybook') {
+
+        this.$router.push('/mybook')
+      } else {
+        this.$router.push("/bookinfo");
+        this.$store.commit("setCurrentUrl", this.$route.query.url);
+      }
+    },
+    onClickRight() {
+      this.$router.push("/");
+      this.$store.commit('setMyBookRouter', '')
+    },
   },
   created() {
-    console.log(this.$store.state.footprint);
-    console.log(this.$route.query.url);
+    // console.log(this.$store.state.footprint);
+    // console.log(this.$route.query.url);
   },
+  // beforeRouteLeave (to, from, next) {
+    
+  // }
 };
 </script>
 
@@ -90,17 +118,13 @@ export default {
     *zoom: 1;
   }
   .book-box {
-    padding-top: 40px;
+    padding-top: 50px;
   }
   .btn-box-top {
     position: fixed;
-    top: 0px;
-    display: flex;
-    button {
-      border-radius: 5px;
-      background-color: yellow;
-      width: 133px;
-    }
+    top: 0;
+    right: 0;
+    left: 0;
   }
   .btn-box-bottom {
     position: fixed;

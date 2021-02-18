@@ -37,6 +37,7 @@ export default {
       console.log(index);
       let bookinfo = this.categoryListData[index];
       this.$store.commit('setBookInfo', bookinfo)
+      this.$store.commit('setPathUrl', '/categoryList')
       this.$router.push({
         path: "/bookinfo",
         query: {

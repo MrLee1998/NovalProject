@@ -14,7 +14,9 @@ let state ={
 	bookContent: {},
 	bookInfo: {},
 	currentUrl: '',
-	mybooks: []
+	mybooks: [],
+	myBookRouter: '',
+	pathUrl: ''
 }
 let mutations ={
 		setNext(state, next) {
@@ -55,6 +57,12 @@ let mutations ={
 		},
 		setMybooks(state, mybooks) {
 			state.mybooks = mybooks
+		},
+		setMyBookRouter(state, myBookRouter) {
+			state.myBookRouter = myBookRouter
+		},
+		setPathUrl(state, pathUrl) {
+			state.pathUrl = pathUrl
 		}
 	}
 

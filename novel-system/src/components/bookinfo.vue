@@ -1,6 +1,6 @@
 <template>
   <div class="bookInfo">
-    <headBack :routerUrl="'/categoryList'"></headBack>
+    <headBack :routerUrl="this.$store.state.pathUrl"></headBack>
     <div class="bookinfo-header">
       <div class="left">
         <img :src="bookInfo.img" alt="" />
@@ -86,8 +86,17 @@ export default {
       chapterUrl: "",
       chapterNumData: [],
       update: "",
+      pathUrl: "",
     };
   },
+  // beforeRouteLeave (to, from, next) {
+  //   if(to.path) {
+  //     this.pathUrl = to.path
+  //     console.log(to.pathUrl);
+  //     next();
+  //   }
+
+  // },
   methods: {
     nextPage() {
       console.log(this.$store.state.next);
@@ -122,14 +131,6 @@ export default {
     },
     addBook() {
       let userId = getLocal("userId");
-      // console.log(userId);
-      // this.$http
-      //   .getmybook({
-      //     userId: userId,
-      //   })
-      //   .then((res) => {
-      //     console.log(res);
-      //   });
       if (!userId) {
         Toast({
           message: "请先登录哦!",
@@ -137,16 +138,35 @@ export default {
         });
         this.$router.push("/login");
       }
+      Toast.success("添加成功!");
       this.$http
         .mybook({
-           userId: userId,
+          userId: userId,
           bookInfo: this.$store.state.bookInfo,
         })
         .then((res) => {
-          console.log(res);
-          if(res.data.code == 1) {
-            Toast.success('加入成功')
+          // console.log(res);
+          if (res.data.code == 1) {
+            return Toast({
+              message: "自定义图标",
+              icon: "like-o",
+            });
           }
+        });
+      console.log(this.$store.state.readBookUrl);
+      let bookUrl = {
+        url: this.$store.state.bookInfo.url,
+        readChapterUrl: this.$store.state.readBookUrl,
+      };
+      // console.log(bookUrl);
+      this.$http
+        .keepBookUrl({
+          userId,
+          bookUrl,
+        })
+        .then((res) => {
+          console.log(res);
+          this.$router.push("/mybook");
         });
     },
     chapterRead(url) {
@@ -175,7 +195,7 @@ export default {
           url: url,
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           this.newChapterData = res.data.newChapterData;
           this.allChapterData = res.data.allChapterData;
           this.pageArray = res.data.pageArray;
@@ -201,6 +221,7 @@ export default {
     this.bookInfo = this.$store.state.bookInfo;
     this.currentUrl = this.bookInfo.url;
     this.getBookInfo(this.currentUrl);
+    console.log(this.$store.state.pathUrl);
   },
 };
 </script>

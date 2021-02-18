@@ -56,6 +56,7 @@ export default {
       console.log(index);
       let bookinfo = this.categoryList[index];
       this.$store.commit('setBookInfo', bookinfo)
+      this.$store.commit('setPathUrl', '/recommend')
       this.$router.push({
         path: "/bookinfo",
         query: {

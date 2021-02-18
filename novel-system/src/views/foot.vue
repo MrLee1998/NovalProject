@@ -38,6 +38,7 @@ export default {
       console.log(index);
       let bookinfo = this.footprintList[index];
       this.$store.commit('setBookInfo', bookinfo)
+      this.$store.commit('setPathUrl', '/foot')
       this.$router.push({
         path: "/bookinfo",
         query: {
@@ -57,6 +58,7 @@ export default {
 .recommend-box {
   overflow-y: scroll;
   height: 90vh;
+  margin-top: 30px;
 }
 .recommend-list {
   border-bottom: 1px solid #dcdfe6;

@@ -8,7 +8,9 @@ import 'vant/lib/index.css';
 import api from '../axios/index.js'
 import axios from 'axios'
 
+import { NavBar } from 'vant';
 
+Vue.use(NavBar);
 Vue.use(Vant)
 Vue.config.productionTip = false
 Vue.use(api)

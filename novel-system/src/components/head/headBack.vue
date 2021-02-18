@@ -1,17 +1,19 @@
 <template>
-  <van-nav-bar
-    class="search-box"
-    title=""
-    left-text="返回"
-    left-arrow
-    @click-left="onClickLeft"
-    @click-right="onClickRight"
-  >
-    <template #right>
-      <input class="search-input" type="text" />
-      <van-icon name="search" size="18" />
-    </template>
-  </van-nav-bar>
+  <div>
+    <van-nav-bar
+      class="search-box"
+      title=""
+      left-text="返回"
+      left-arrow
+      @click-left="onClickLeft"
+      @click-right="onClickRight"
+    >
+      <template #right>
+        <input class="search-input" type="text" />
+        <van-icon name="search" size="18" />
+      </template>
+    </van-nav-bar>
+  </div>
 </template>
 
 <script>
@@ -19,16 +21,14 @@ export default {
   props: {
     routerUrl: {
       type: String,
-      require: true
-    }
+      require: true,
+    },
   },
   data() {
-    return {
-      
-    }
+    return {};
   },
   methods: {
-     onClickLeft() {
+    onClickLeft() {
       console.log("1");
       this.$router.push(this.routerUrl);
     },
