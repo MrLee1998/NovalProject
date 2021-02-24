@@ -4,7 +4,7 @@
       <span class="text">欢迎使用!</span>
       <div class="btn">
         <button class="btn" @click="login">登录</button>
-        <button class="btn" @click="exit">退出</button> 
+        <button class="btn" @click="exit">退出</button>
       </div>
     </div>
     <van-tabbar route>
@@ -17,21 +17,24 @@
 </template>
 
 <script>
-import {getLocal, deleteLocal} from '../../common/utils'
-
+import { getLocal, deleteLocal } from "../../common/utils";
+import { Toast } from 'vant'
 export default {
   methods: {
     login() {
-      let userId = getLocal('userId')
-      if(userId) {
-        return
+      let userId = getLocal("userId");
+      if (userId) {
+        return Toast({
+          message: "已经登陆了哦！",
+          icon: "warning",
+        });
       }
-      this.$router.push('/login')
+      this.$router.push("/login");
     },
     exit() {
-      deleteLocal('userId')
-      this.$router.push('/login')
-    }
+      deleteLocal("userId");
+      this.$router.push("/login");
+    },
   },
 };
 </script>
@@ -47,14 +50,14 @@ export default {
       margin-left: 20px;
     }
     .btn {
-      button{
-      background-color: rgb(51, 50, 47);
-      color: #fff;
-      padding: 4px;
-    }
+      button {
+        background-color: rgb(51, 50, 47);
+        color: #fff;
+        padding: 4px;
+      }
     }
   }
-  .van-tabbar{
+  .van-tabbar {
     display: fixed;
     top: 30px;
   }

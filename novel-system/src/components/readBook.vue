@@ -10,7 +10,8 @@
         @click-right="onClickRight"
       />
     </div>
-    <div class="book-box">
+    <div class="book-box" @click="showPopup">
+      <div class="changeStyle" v-if="show">哈哈</div>
       <div class="book-title">{{ this.$store.state.bookContent.title }}</div>
       <div class="book-content">
         {{ this.$store.state.bookContent.bookContent }}
@@ -25,12 +26,24 @@
 </template>
 
 <script>
-import { Toast } from "vant";
+import { Toast, Dialog } from "vant";
+import { getLocal } from "../common/utils";
+
 export default {
   data() {
-    return {};
+    return {
+      show: false,
+    };
   },
   methods: {
+    showPopup() {
+      if(this.show == false) {
+        this.show = true
+      } else {
+        this.show = false
+      }
+      console.log(this.show)
+    },
     goToChapter() {
       this.$router.push("/bookinfo");
       this.$store.commit("setCurrentUrl", this.$route.query.url);
@@ -46,7 +59,7 @@ export default {
         });
         return;
       }
-      console.log(this.$store.state.bookInfo);
+      // console.log(this.$store.state.currentUrl);
       this.$store.commit(
         "setCurrentUrl",
         this.$store.state.bookContent.nextChapter
@@ -86,17 +99,83 @@ export default {
         });
     },
     onClickLeft() {
-      if (this.$store.state.myBookRouter == '/mybook') {
-
-        this.$router.push('/mybook')
+      let userId = getLocal("userId");
+      if (this.$store.state.pathUrl != "/mybook") {
+        Dialog.confirm({
+          title: "",
+          message: "是否加入书架呢?",
+        })
+          .then(() => {
+            console.log("加入成功");
+            console.log(userId);
+            this.$http
+              .mybook({
+                userId: userId,
+                bookInfo: this.$store.state.bookInfo,
+              })
+              .then((res) => {
+                console.log(res);
+                if (res.data.code == 1) {
+                  return Toast({
+                    message: "已加入书架",
+                    icon: "like-o",
+                  });
+                }
+              });
+            let readChapterUrl = "";
+            if (this.$store.state.currentUrl) {
+              readChapterUrl = this.$store.state.currentUrl;
+            } else {
+              readChapterUrl = this.$store.state.readBookUrl;
+            }
+            console.log(readChapterUrl);
+            let bookUrl = {
+              url: this.$store.state.bookInfo.url,
+              readChapterUrl: readChapterUrl,
+            };
+            console.log(bookUrl);
+            this.$http
+              .keepBookUrl({
+                userId,
+                bookUrl,
+              })
+              .then((res) => {
+                console.log(res);
+                this.$router.push("/mybook");
+              });
+          })
+          .catch(() => {
+            this.$router.push("/bookinfo");
+            this.$store.commit("setCurrentUrl", this.$route.query.url);
+          });
       } else {
-        this.$router.push("/bookinfo");
-        this.$store.commit("setCurrentUrl", this.$route.query.url);
+        console.log(this.$store.state.bookContent.nextChapter);
+        // console.log(this.$store.state.bookInfo);
+        let readChapterUrl
+        if (this.$store.state.currentUrl) {
+          readChapterUrl = this.$store.state.currentUrl;
+        } else {
+          readChapterUrl = this.$store.state.readBookUrl;
+        }
+        console.log(readChapterUrl);
+        let bookUrl = {
+          url: this.$store.state.bookInfo.url,
+          readChapterUrl: readChapterUrl,
+        };
+        this.$http
+          .updateBookUrl({
+            userId: userId,
+            bookUrl: bookUrl,
+          })
+          .then((res) => {
+            console.log(res);
+          });
+        this.$router.push("/mybook");
       }
     },
     onClickRight() {
       this.$router.push("/");
-      this.$store.commit('setMyBookRouter', '')
+      this.$store.commit("setMyBookRouter", "");
     },
   },
   created() {
@@ -104,7 +183,7 @@ export default {
     // console.log(this.$route.query.url);
   },
   // beforeRouteLeave (to, from, next) {
-    
+
   // }
 };
 </script>
@@ -119,6 +198,15 @@ export default {
   }
   .book-box {
     padding-top: 50px;
+    .changeStyle {
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 1000px;
+      width: 100%;
+      height: 100%;
+      z-index: 99;
+    }
   }
   .btn-box-top {
     position: fixed;

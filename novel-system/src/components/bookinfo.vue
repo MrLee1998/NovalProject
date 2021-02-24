@@ -16,7 +16,7 @@
     <div class="introduce">
       <span>{{ bookInfo.introduce }}</span>
     </div>
-    <div class="btn-item">
+    <div class="btn-item" v-if="showBth">
       <button @click="goToRead">开始阅读</button>
       <button @click="addBook">加入书架</button>
     </div>
@@ -44,22 +44,13 @@
     </div>
     <div class="btn-box">
       <button class="pre" @click="prePage()">上一章</button>
-      <!-- <div class="pageNum">
-        <select name="" id="" class="selectPageNum">
-          <option v-for="num in pageArray" 
-          :key="num.chapterUrl" 
-          :value="num.chapterNum"
-          >{{num.chapterNum}}</option>
-        </select>
-      </div> -->
       <van-dropdown-menu direction="up" active-color="#1989fa">
         <van-dropdown-item
           v-model="chapterUrl"
           :options="chapterNumData"
           :title="title"
-          @change="choosePageNum(pageArray.chapterUrl)"
-        >
-        </van-dropdown-item>
+          @change="choosePageNum(chapterUrl)"
+        />
       </van-dropdown-menu>
       <button class="next" @click="nextPage()">下一张</button>
     </div>
@@ -70,6 +61,7 @@
 import headBack from "../components/head/headBack";
 import { getLocal } from "../common/utils";
 import { Toast } from "vant";
+// import { DropdownMenu, DropdownItem } from 'vant';
 
 export default {
   components: {
@@ -87,6 +79,7 @@ export default {
       chapterNumData: [],
       update: "",
       pathUrl: "",
+      showBth: true,
     };
   },
   // beforeRouteLeave (to, from, next) {
@@ -99,16 +92,18 @@ export default {
   // },
   methods: {
     nextPage() {
-      console.log(this.$store.state.next);
+      // console.log(this.$store.state.next);
       this.getBookInfo(this.$store.state.next);
-      console.log(this.chapterNumData);
+      // console.log(this.chapterNumData);
     },
     prePage() {
-      console.log(this.$store.state.pre);
+      // console.log(this.$store.state.pre);
       this.getBookInfo(this.$store.state.pre);
     },
-    choosePageNum() {
-      console.log("url");
+    choosePageNum(url) {
+      // console.log(url);
+      // console.log(this.chapterUrl);
+      this.getBookInfo(url);
     },
     goToRead() {
       this.$http
@@ -138,35 +133,54 @@ export default {
         });
         this.$router.push("/login");
       }
-      Toast.success("添加成功!");
       this.$http
-        .mybook({
+        .getmybook({
           userId: userId,
-          bookInfo: this.$store.state.bookInfo,
         })
         .then((res) => {
-          // console.log(res);
-          if (res.data.code == 1) {
-            return Toast({
-              message: "自定义图标",
-              icon: "like-o",
+          console.log(res.data);
+          let temp = false;
+          if (res.data.length > 0) {
+            res.data[0].bookInfo.forEach((item) => {
+              if (item.url == this.$store.state.bookInfo.url) {
+                temp = true;
+              }
             });
           }
-        });
-      console.log(this.$store.state.readBookUrl);
-      let bookUrl = {
-        url: this.$store.state.bookInfo.url,
-        readChapterUrl: this.$store.state.readBookUrl,
-      };
-      // console.log(bookUrl);
-      this.$http
-        .keepBookUrl({
-          userId,
-          bookUrl,
-        })
-        .then((res) => {
-          console.log(res);
-          this.$router.push("/mybook");
+          if (temp == true) {
+            return Toast({
+              message: "请勿重复添加！",
+              icon: "warning",
+            });
+          } else {
+            Toast.success("添加成功!");
+            this.$http
+              .mybook({
+                userId: userId,
+                bookInfo: this.$store.state.bookInfo,
+              })
+              .then((res) => {
+                console.log(res);
+                if (res.data.code == 1) {
+                  return;
+                }
+              });
+            console.log(this.$store.state.readBookUrl);
+            let bookUrl = {
+              url: this.$store.state.bookInfo.url,
+              readChapterUrl: this.$store.state.readBookUrl,
+            };
+            // console.log(bookUrl);
+            this.$http
+              .keepBookUrl({
+                userId,
+                bookUrl,
+              })
+              .then((res) => {
+                console.log(res);
+                this.$router.push("/mybook");
+              });
+          }
         });
     },
     chapterRead(url) {
@@ -195,14 +209,18 @@ export default {
           url: url,
         })
         .then((res) => {
-          // console.log(res);
+          console.log(res);
           this.newChapterData = res.data.newChapterData;
           this.allChapterData = res.data.allChapterData;
           this.pageArray = res.data.pageArray;
           this.update = res.data.update;
           res.data.pageArray.forEach((item) => {
             if (item) {
-              this.chapterNumData.push(item);
+              let obj = {
+                text: item.chapterNum,
+                value: item.chapterUrl
+              }
+              this.chapterNumData.push(obj);
             }
           });
           this.$store.commit("setNext", res.data.next);
@@ -222,6 +240,9 @@ export default {
     this.currentUrl = this.bookInfo.url;
     this.getBookInfo(this.currentUrl);
     console.log(this.$store.state.pathUrl);
+    if (this.$store.state.pathUrl == "/mybook") {
+      this.showBth = false;
+    }
   },
 };
 </script>
@@ -347,9 +368,15 @@ export default {
     //     padding-right: 10px;
     //   }
     // }
-    van-dropdown-menu {
+    .van-dropdown-menu {
       height: 20px;
-      background-color: red;
+      .van-dropdown-item {
+        position: absolute !important;
+
+        height: 100vh;
+
+        top: 100% !important;
+      }
     }
   }
 }

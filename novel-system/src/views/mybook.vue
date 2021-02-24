@@ -19,6 +19,7 @@
         </div>
       </div>
     </div>
+    
   </div>
 </template>
 
@@ -49,11 +50,11 @@ export default {
           userId: userId,
         })
         .then((res) => {
-          console.log(res);
-          if(res.data.length > 0) {
-             this.mybooks = res.data[0].bookInfo;
-            console.log(this.mybooks);
-          }   
+          // console.log(res);
+          if (res.data.length > 0) {
+            this.mybooks = res.data[0].bookInfo;
+            // console.log(this.mybooks);
+          }
           // this.$store.commit('setMybooks', res.data.bookInfo);
         });
     },
@@ -61,31 +62,46 @@ export default {
       // console.log(index);
       console.log(this.mybooks[index]);
       let url = this.mybooks[index].url;
-      this.$store.commit("setMyBookRouter", "/mybook");
+      let userId = getLocal("userId");
+      this.$store.commit("setPathUrl", "/mybook");
       this.$http
-        .bookinfo({
+        .getBookUrl({
+          userId: userId,
           url: url,
         })
         .then((res) => {
-          // console.log(res);
-          this.$store.commit("setBookInfo", this.mybooks[index]);
-          this.$store.commit("setReadBookUrl", res.data.readBookUrl);
+          console.log(res);
+          let url = res.data.url;
+          let readChapterUrl = res.data.readChapterUrl;
+          console.log(url);
           this.$http
-            .readbook({
-              url: this.$store.state.readBookUrl || "",
+            .bookinfo({
+              url: url,
             })
             .then((res) => {
-              console.log(res);
-              if (res) {
-                this.$store.commit("setBookContent", res.data);
-                this.$store.commit("setFootprint", this.$store.state.bookInfo);
-                this.$router.push({
-                  path: "/readbook",
-                  query: {
-                    url: this.currentUrl,
-                  },
+              // console.log(res);
+              this.$store.commit("setBookInfo", this.mybooks[index]);
+              this.$store.commit("setReadBookUrl", res.data.readBookUrl);
+              this.$http
+                .readbook({
+                  url: readChapterUrl,
+                })
+                .then((res) => {
+                  console.log(res);
+                  if (res) {
+                    this.$store.commit("setBookContent", res.data);
+                    this.$store.commit(
+                      "setFootprint",
+                      this.$store.state.bookInfo
+                    );
+                    this.$router.push({
+                      path: "/readbook",
+                      query: {
+                        url: this.currentUrl,
+                      },
+                    });
+                  }
                 });
-              }
             });
         });
     },
