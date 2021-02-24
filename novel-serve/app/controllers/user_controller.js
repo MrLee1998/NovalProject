@@ -8,6 +8,7 @@ const config = require('../../config')
 const getCategory = require('../public/utils/getCategory')
 const getBookInfo = require('../public/utils/getBookInfo')
 const getBookContent = require('../public/utils/getBookContent')
+const { url } = require('koa-router')
 
 // 登录
 const login = async (ctx) => {
@@ -215,7 +216,7 @@ const keepBookUrl = async (ctx) => {
   let userId = ctx.request.body.userId
   // let readChapterUrl = ctx.request.body.bookUrl.readChapterUrl
   let bookUrl = ctx.request.body.bookUrl
-  // console.log(bookUrl);
+  // console.log(readChapterUrl);
   const findUserId = await ReadBookUrl_col.find({
     userId: userId
   })
@@ -262,6 +263,71 @@ const keepBookUrl = async (ctx) => {
     }
   }
 }
+
+//查找相应书架中书本的读书进度
+const getBookUrl = async (ctx) => {
+  console.log(ctx.request.body);
+  let userId = ctx.request.body.userId
+  let bookUrl = ctx.request.body.url
+  const findUserId = await ReadBookUrl_col.findOne({
+    userId: userId
+  })
+  if (findUserId) {
+    // console.log(findUserId.bookUrl);
+    let data;
+    findUserId.bookUrl.forEach((item) => {
+      if (bookUrl == item.url) {
+        data = item
+      }
+    })
+    ctx.body = {
+      code: 1,
+      message: '获取成功',
+      data: data
+    }
+  }
+
+}
+
+//  更新读书进度
+const updateBookUrl = async (ctx) => {
+  console.log(ctx.request.body.bookUrl);
+  let userId = ctx.request.body.userId
+  let bookUrl = ctx.request.body.bookUrl
+  let url = ctx.request.body.bookUrl.url
+  const findUserId = await ReadBookUrl_col.findOne({
+      userId: userId
+  })
+  let findIndex;
+  findUserId.bookUrl.forEach((item, index) => {
+    if(item.url == url) {
+      findIndex =  index
+    }
+  })
+  const data = await ReadBookUrl_col.update({
+    userId: userId,   
+  },{
+    $pull: {
+      bookUrl: findUserId.bookUrl[findIndex]
+    }
+  })
+  if(data) {
+    const updateRes = await ReadBookUrl_col.update({
+      userId: userId,   
+    },{
+      $push: {
+        bookUrl: bookUrl
+      }
+    })
+    console.log(updateRes);
+    ctx.body = {
+    code: 1,
+    message: '1',
+    data: updateRes
+  }
+  }
+  
+}
 module.exports = {
   login,
   register,
@@ -270,5 +336,7 @@ module.exports = {
   readbook,
   mybook,
   getmybook,
-  keepBookUrl
+  keepBookUrl,
+  getBookUrl,
+  updateBookUrl
 }

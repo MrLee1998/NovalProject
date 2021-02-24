@@ -19,4 +19,8 @@ router.post('/getmybook', user_controller.getmybook)
 
 router.post('/keepBookUrl', user_controller.keepBookUrl)
 
+router.post('/getBookUrl', user_controller.getBookUrl)
+
+router.post('/updateBookUrl', user_controller.updateBookUrl)
+
 module.exports = router
