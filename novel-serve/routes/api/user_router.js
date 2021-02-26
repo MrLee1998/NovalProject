@@ -23,4 +23,10 @@ router.post('/getBookUrl', user_controller.getBookUrl)
 
 router.post('/updateBookUrl', user_controller.updateBookUrl)
 
+router.post('/deleteBook', user_controller.deleteBook)
+
+router.post('/keepFoot', user_controller.keepFoot)
+
+router.post('/getFoot', user_controller.getFoot)
+
 module.exports = router

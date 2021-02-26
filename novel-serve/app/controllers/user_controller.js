@@ -2,6 +2,7 @@ const User_col = require('../models/user')
 const Password_col = require('../models/password')
 const CollectBook_col = require('../models/collectBook')
 const ReadBookUrl_col = require('../models/readBookUrl')
+const Foot_col = require('../models/foot')
 const passport = require('../utils/passport')
 const { v1: uuidv1 } = require('uuid')
 const config = require('../../config')
@@ -328,6 +329,118 @@ const updateBookUrl = async (ctx) => {
   }
   
 }
+
+//  删除指定书本
+const deleteBook = async (ctx) => {
+  console.log(ctx.request.body);
+  let userId = ctx.request.body.userId
+  let url = ctx.request.body.url
+  const findBookUrl = await ReadBookUrl_col.findOne({
+    userId: userId
+  })
+  const findBookInfo = await CollectBook_col.findOne({
+    userId: userId
+  })
+  let urlIdx, bookinfoIdx;
+  findBookInfo.bookInfo.forEach((item, index) => {
+    if(item.url == url) {
+      bookinfoIdx = index
+      return 
+    }
+  })
+  findBookUrl.bookUrl.forEach((item, index) => {
+    if(item.url == url) {
+      urlIdx = index
+      return 
+    }
+  })
+  console.log(urlIdx, bookinfoIdx);
+  const infoData = await CollectBook_col.update({
+    userId: userId,   
+  },{
+    $pull: {
+      bookInfo: findBookInfo.bookInfo[bookinfoIdx]
+    }
+  })
+  const urlData = await ReadBookUrl_col.update({
+    userId: userId,   
+  },{
+    $pull: {
+      bookUrl: findBookUrl.bookUrl[urlIdx]
+    }
+  })
+  
+  console.log(infoData);
+  console.log(urlData);
+  ctx.body = {
+    code: 1,
+    message: '1',
+    data: '1'
+  }
+}
+
+const keepFoot = async (ctx) => {
+  let userId = ctx.request.body.userId
+  let bookInfo = ctx.request.body.bookInfo
+  const findUserId = await Foot_col.find({
+    userId: userId,  
+  })
+  console.log(findUserId);
+  let len = findUserId.length
+  if(len == 0) {
+    const newUserId = await Foot_col.create({
+      userId: userId,
+      bookInfo: bookInfo
+    })
+    if(newUserId) {
+      ctx.body = {
+        code: 1,
+        message: 'success',
+        data: newUserId
+      }
+    }
+  } else {
+    const findBookInfo = await Foot_col.findOne({
+      bookInfo: bookInfo
+    })
+    // console.log(newBook);
+    if (findBookInfo) {
+      return ctx.body = {
+        code: 1,
+        msg: '已经在存在了',
+        data: findBookInfo
+      }
+    } else {
+      let data = await Foot_col.update({
+        userId: userId
+      }, {
+        $push: {
+          bookInfo
+        }
+      }
+      )
+      return ctx.body = {
+        code: 1,
+        msg: '加入成功',
+        data: data
+      }
+    }
+  }
+}
+
+const getFoot = async (ctx) => {
+  let userId = ctx.request.body.userId
+  const foot = await Foot_col.find({
+    userId: userId,  
+  })
+  if(foot) {
+    ctx.body = {
+      code: 1,
+      message: 'success',
+      data: foot
+    }
+  }
+}
 module.exports = {
   login,
   register,
@@ -338,5 +451,8 @@ module.exports = {
   getmybook,
   keepBookUrl,
   getBookUrl,
-  updateBookUrl
+  updateBookUrl,
+  deleteBook,
+  keepFoot,
+  getFoot
 }
