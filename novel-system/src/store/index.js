@@ -16,7 +16,8 @@ let state ={
 	currentUrl: '',
 	mybooks: [],
 	myBookRouter: '',
-	pathUrl: ''
+	pathUrl: '',
+	fontStyle: 'kaiti'
 }
 let mutations ={
 		setNext(state, next) {
@@ -63,6 +64,10 @@ let mutations ={
 		},
 		setPathUrl(state, pathUrl) {
 			state.pathUrl = pathUrl
+		},
+		// 设置字体样式
+		setFontStyle(state, fontStyle) {
+			state.fontStyle = fontStyle
 		}
 	}
 

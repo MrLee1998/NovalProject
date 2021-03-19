@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const footSchema = new Schema({
   userId: {
     type: String,
+    unique: true,
     required: true
   },
   bookInfo: {

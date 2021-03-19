@@ -7,6 +7,8 @@
         class="mybook-box"
         v-for="(book, index) in mybooks"
         :key="book.url"
+        @touchstart="getStarLocation"
+        @touchmove="getMoveLocation"
       >
         <div class="img-box">
           <img class="img" :src="book.img" alt="" />
@@ -17,16 +19,20 @@
             {{ book.lastChapterTitle }}
           </div>
         </div>
+        <van-icon
+          v-if="showDelete"
+          @click.stop="getBookIndex(index)"
+          name="cross"
+        />
       </div>
     </div>
-    
   </div>
 </template>
 
 <script>
 import tabbar from "../components/tabbar/Tabbar";
 import { getLocal } from "../common/utils";
-// import { Toast } from "vant";
+import { Dialog } from "vant";
 
 export default {
   components: {
@@ -35,6 +41,9 @@ export default {
   data() {
     return {
       mybooks: [],
+      startX: "",
+      startY: "",
+      showDelete: false
     };
   },
   computed: {},
@@ -105,6 +114,46 @@ export default {
             });
         });
     },
+    getStarLocation(e) {
+      // console.log(e.touches[0]);
+      let x = Number(e.touches[0].pageX);
+      let y = Number(e.touches[0].pageY);
+      this.startX = x;
+      this.startY = y;
+    },
+    getBookIndex(index) {
+      // this.bookIndex = index;
+      let url = this.mybooks[index].url;
+      let userId = getLocal("userId");
+      Dialog.confirm({
+        title: "标题",
+        message: "弹窗内容",
+      })
+        .then(() => {
+          this.$http.deleteBook({
+            userId: userId,
+            url: url
+          }).then(res => {
+            console.log(res);
+            if(res.code == 1) {
+              this.getMybooks()
+            }
+          })
+          this.showDelete = false
+        })
+        .catch(() => {
+          this.showDelete = false
+        });
+    },
+    getMoveLocation(e) {
+      // console.log(e.touches[0]);
+      let x = Number(e.touches[0].pageX);
+      let y = Number(e.touches[0].pageY);
+      if (this.startX - x >= 0 && this.startY - y >= 0) {
+        // console.log("1");
+        this.showDelete = true;
+      }
+    },
   },
   created() {
     this.getMybooks();
@@ -134,6 +183,10 @@ export default {
       font-weight: 100;
       font-size: 10px;
     }
+  }
+  .van-icon {
+    color: red;
+    margin-right: 100px;
   }
 }
 .img-box {

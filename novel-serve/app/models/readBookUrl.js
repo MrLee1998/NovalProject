@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const readBookUrlSchema = new Schema({
   userId: {
     type: String,
+    unique: true,
     required: true
   },
   bookUrl: {

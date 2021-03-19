@@ -61,7 +61,6 @@
 import headBack from "../components/head/headBack";
 import { getLocal } from "../common/utils";
 import { Toast } from "vant";
-// import { DropdownMenu, DropdownItem } from 'vant';
 
 export default {
   components: {
@@ -106,6 +105,7 @@ export default {
       this.getBookInfo(url);
     },
     goToRead() {
+      let userId = getLocal("userId");
       this.$http
         .readbook({
           url: this.$store.state.readBookUrl || "",
@@ -114,7 +114,12 @@ export default {
           console.log(res);
           if (res) {
             this.$store.commit("setBookContent", res.data);
-            this.$store.commit("setFootprint", this.$store.state.bookInfo);
+            this.$http.keepFoot({
+              userId: userId,
+              bookInfo: this.$store.state.bookInfo
+            }).then(res => {
+              console.log(res);
+            })
             this.$router.push({
               path: "/readbook",
               query: {

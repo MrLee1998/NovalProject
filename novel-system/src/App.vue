@@ -9,7 +9,7 @@
 
 <script>
 // import tabbar from "./components/tabbar/Tabbar";
-// import { getLocal } from "./common/utils";
+import { getLocal } from "./common/utils";
 
 export default {
   name: "App",
@@ -19,16 +19,16 @@ export default {
   data() {
     return {};
   },
+  computed: {
+    fontSty() {
+       let sty = getLocal('fontStyle')
+       return sty
+    }
+  },
   created() {
-    // let userId = getLocal("userId");
-    // this.$http
-    //   .getmybook({
-    //     userId: userId,
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //     this.$store.commit('setMybooks', res.data.bookInfo);
-    //   });
+    // let sty = getLocal('fontStyle')
+    console.log(this.fontSty);
+    document.getElementById("app").style.fontFamily = this.fontSty
   },
 };
 </script>
@@ -36,6 +36,7 @@ export default {
 <style lang="less" scoped>
 #app {
   background-color: rgb(180, 176, 157);
+  // font-family: kaiti;
   // height: 100vh;
   height: 100%;
 }

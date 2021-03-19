@@ -24,6 +24,8 @@
 
 <script>
 import tabbar from '../components/tabbar/Tabbar'
+import { getLocal } from '../common/utils'
+
 export default {
   components: {
     tabbar
@@ -48,8 +50,14 @@ export default {
     }
   },
   created() {
-    console.log(this.$store.state.footprint);
-    this.footprintList = this.$store.state.footprint
+    // console.log();
+    let userId = getLocal('userId')
+    this.$http.getFoot({
+      userId: userId
+    }).then(res => {
+      console.log(res);
+      this.footprintList = res.data[0].bookInfo
+    })
   },
 }
 </script>
